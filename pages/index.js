@@ -126,7 +126,11 @@ export default function ChallengeApp() {
                   return;
                 }
                 const chosen = filtered[Math.floor(Math.random() * filtered.length)];
-                setCurrentChallenge({ ...chosen, player: selectedPlayer });
+                const challengeWithPlayer = Object.assign({}, chosen, { player: selectedPlayer });
+                console.log("Aktueller Spieler:", selectedPlayer);
+                console.log("Setzte Challenge:", challengeWithPlayer);
+                setCurrentChallenge(challengeWithPlayer);
+                console.log("NEUE CHALLENGE:", challengeWithPlayer);
                 setStep("result");
               } else {
                 setStep("idle");
@@ -148,10 +152,21 @@ export default function ChallengeApp() {
             <button
               className="px-3 py-1 bg-green-500 text-white rounded"
               onClick={async () => {
-                await supabase
+                console.log("✅ Erledigt wurde geklickt");
+                console.log("→ Versuche Update:", {
+                  id: currentChallenge.id,
+                  player: currentChallenge.player,
+                });
+                await fetchChallenges(); // Lade alle aktuellen Challenges erneut
+                const { error } = await supabase
                   .from("challenges")
                   .update({ status: "done", player: currentChallenge.player })
                   .eq("id", currentChallenge.id);
+                if (error) {
+                  console.error("❌ Supabase-Fehler:", error.message);
+                } else {
+                  console.log("✅ Challenge erfolgreich aktualisiert");
+                }
                 setCurrentChallenge(null);
                 setStep("feedback");
                 fetchChallenges();
@@ -163,10 +178,21 @@ export default function ChallengeApp() {
             <button
               className="px-3 py-1 bg-red-500 text-white rounded"
               onClick={async () => {
-                await supabase
+                console.log("❌ Fehlgeschlagen wurde geklickt");
+                console.log("→ Versuche Update:", {
+                  id: currentChallenge.id,
+                  player: currentChallenge.player,
+                });
+                await fetchChallenges();
+                const { error } = await supabase
                   .from("challenges")
                   .update({ status: "failed", player: currentChallenge.player })
                   .eq("id", currentChallenge.id);
+                if (error) {
+                  console.error("❌ Supabase-Fehler:", error.message);
+                } else {
+                  console.log("✅ Challenge erfolgreich aktualisiert");
+                }
                 setCurrentChallenge(null);
                 setStep("feedback");
                 fetchChallenges();
