@@ -148,6 +148,7 @@ export default function ChallengeApp() {
           <p className="text-xl font-semibold mb-2">{currentChallenge.text}</p>
           <p className="text-sm text-gray-500">Punkte: {currentChallenge.points}</p>
           <p className="text-xs text-gray-400">Zuständig: {currentChallenge.player}</p>
+          <p className="text-xs text-gray-400">Erstellt von: {currentChallenge.author}</p>
           <div className="flex gap-2 mt-4 justify-center">
             <button
               className="px-3 py-1 bg-green-500 text-white rounded"
